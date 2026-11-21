@@ -2,7 +2,7 @@ from pathlib import Path
 import ollama
 from itertools import islice
 
-folder = Path("samples/classification")
+folder = Path("samples/classification/source")
 RED = "\033[31m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
@@ -25,30 +25,35 @@ for file in files:
                 "content": """
                     You are a helpful categorisation assistant. You will be provide with the beginnen of an XML
                     Document and you should decide between the following three categories: 
-                    - Self-Descriptive: A file with content that is understandable without external knowledge. An
+                    - Self Descriptive: A file with content that is understandable without external knowledge. An
                     Example of this would be a file that contains a root tag named "users" and child tags named
                     "user" with attributes like "name", "email", and "age".
 
-                    - Schema-Driven: A file that features element tags and attributes that are not understandable
+                    - Schema Driven: A file that features element tags and attributes that are not understandable
                     without external knowledge. This external knowledge could be a schema or rules defined by an
                     organization. An example of this would be an EDIFACT file that was converted to XML and thus
                     included tags like "UNH", "BGM", and "DTM" with attributes like "C506" and "C507". The file 
                     uses vocabulary that is not understandable without external knowledge that defines this new 
                     vocabulary.
 
-                    - Schema-Describing: A file that does not hold data but instead describes the structure of other
+                    - Schema Describing: A file that does not hold data but instead describes the structure of other
                     files that are intended to hold data. An example of this would be an XSD file that contains tags
                     like "xs:element" and "xs:complexType" with attributes like "name", "type", and "minOccurs". 
                     The meaning of these tags and attributes is understandable without external knowledge, but the 
                     file does not hold data itself.
 
                     Although files like UI definitions or configuration files follow rules defined by an external
-                    actor, they are not considered schema-driven since they typically can be understood without 
-                    external knowledge. Classify the XML fragment into exactly one category! If the evidence is
-                    insufficient and you are unsure, respond with "evidence insufficient" and do not invent external 
-                    standards! ONLY respond with one of these four words: "self-descriptive", "schema-driven",
-                    "schema-describing", or "evidence insufficient".
-                    """,
+                    actor, they are not considered schema driven since they typically use human language. This means
+                    that a schema driven file can be differentiated from self descriptive file if it uses IDs instead of
+                    meaningful words. A self descriptive file for example would use terms like "component", "task", 
+                    "servers" and "clients" while a schema driven file would use IDs for each of these terms. These IDs
+                    would then be explained in an external document. 
+                    
+                    Classify the XML fragment into exactly one category! If the evidence is insufficient and you are 
+                    unsure, respond with "evidence_insufficient" and do not invent external standards! ONLY respond 
+                    with one of these four words: "self_descriptive", "schema_driven", "schema_describing", or 
+                    "evidence_insufficient".
+                    """
             },
             {
                 "role": "user",
@@ -67,10 +72,19 @@ for file in files:
 
     print(f"{GREEN}Input: {first_30_lines}{RESET}")
 
-    print(f"{YELLOW}Category: {response["message"]["content"]}{RESET}")
-
     if "thinking" in response["message"]:
         print(f"{BLUE}Thinking: {response["message"]["thinking"]}{RESET}")
     else:
         print(f"{BLUE}No thinking information available.{RESET}")
 
+    predicted_category = response["message"]["content"].strip().lower()
+    print(f"{YELLOW}Category: {predicted_category}{RESET}")
+
+    if predicted_category == "self_descriptive":
+        file.replace("samples/classification/self_descriptive/"+file.name)
+    elif predicted_category == "schema_driven":
+        file.replace("samples/classification/schema_driven/"+file.name)
+    elif predicted_category == "schema_describing":
+        file.replace("samples/classification/schema_describing/"+file.name)
+    elif predicted_category == "evidence_insufficient":
+        file.replace("samples/classification/evidence_insufficient/"+file.name)
