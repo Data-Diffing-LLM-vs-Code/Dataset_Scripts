@@ -2,7 +2,7 @@ from lxml import etree
 import re
 from pathlib import Path
 
-folder = Path("samples")
+folder = Path("samples/preprocessing")
 
 files=list(folder.iterdir())
 files.sort()

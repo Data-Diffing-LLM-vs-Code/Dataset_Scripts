@@ -42,4 +42,4 @@ def generate_xml(filename, target_mib):
 
 
 if __name__ == "__main__":
-    generate_xml("./samples/sample.xml", 2)
+    generate_xml("./samples/generator/sample.xml", 2)

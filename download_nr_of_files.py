@@ -14,7 +14,7 @@ for row in ds_meta:
 
     if row["size"] >= 3072:
         sample = next(iter(ds.skip(i)))
-        filename = f"./samples/{i}.xml"
+        filename = f"./samples/downloads/{i}.xml"
 
         with open(filename, "w", encoding="utf-8") as f:
             f.write(sample["content"])

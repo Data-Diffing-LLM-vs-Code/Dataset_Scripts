@@ -2,7 +2,7 @@ from pathlib import Path
 import ollama
 from itertools import islice
 
-folder = Path("samples")
+folder = Path("samples/classification")
 RED = "\033[31m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
