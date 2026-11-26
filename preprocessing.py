@@ -15,8 +15,8 @@ for file in files:
     try:
         with open (file, "r") as f:
             xml=f.read()
-            xml=xml.replace(r"\n"," ").replace(r"\t"," ").replace("\r"," ").replace("\n"," ")
-            xml=re.sub(r"\s+"," ",xml)
+            # xml=xml.replace(r"\n"," ").replace(r"\t"," ").replace("\r"," ").replace("\n"," ")
+            # xml=re.sub(r"\s+"," ",xml)
 
         root = etree.fromstring(xml.encode("UTF-8"), etree.XMLParser(remove_blank_text=True))
         etree.indent(root, space="    ")
